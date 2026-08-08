@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // MongoDB URI जो आपने कॉपी की थी
-const uri = "mongodb+srv://<db_username>ushivani059_db_user:7VSUAjZn897I9DA9@cluster0.2ohgfto.mongodb.net/?appName=Primium-Cloud-Drive-1";
+const uri = "mongodb+srv:ushivani059_db_user:7VSUAjZn897I9DA9@cluster0.2ohgfto.mongodb.net/?appName=Primium-Cloud-Drive-1";
 const client = new MongoClient(uri);
 
 // Google Drive API की Credentials
