@@ -1,559 +1,148 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Cloud Storage Console</title>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        body {
-            background-color: #0b0f19;
-            color: #e2e8f0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Navbar Header */
-        header {
-            background-color: #161e2e;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #232d3f;
-        }
-
-        .logo {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #38bdf8;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .btn-primary {
-            background-color: #0284c7;
-            color: #ffffff;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.2s;
-        }
-
-        .btn-primary:hover {
-            background-color: #0369a1;
-        }
-
-        /* Container Layout */
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-            width: 100%;
-            flex-grow: 1;
-        }
-
-        /* Top Overview Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background-color: #161e2e;
-            border: 1px solid #232d3f;
-            border-radius: 12px;
-            padding: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1.2rem;
-        }
-
-        .stat-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: justify;
-            align-content: center;
-            font-size: 1.5rem;
-            padding-left: 14px;
-        }
-
-        .icon-total { background-color: rgba(56, 189, 248, 0.15); color: #38bdf8; }
-        .icon-used { background-color: rgba(239, 68, 68, 0.15); color: #ef4444; }
-        .icon-free { background-color: rgba(34, 197, 94, 0.15); color: #22c55e; }
-        .icon-accounts { background-color: rgba(168, 85, 247, 0.15); color: #a855f7; }
-
-        .stat-info h4 {
-            font-size: 0.85rem;
-            color: #94a3b8;
-            margin-bottom: 0.3rem;
-        }
-
-        .stat-info p {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        /* Storage Usage Progress Bar */
-        .progress-box {
-            background-color: #161e2e;
-            border: 1px solid #232d3f;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .progress-title {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.8rem;
-            font-size: 0.95rem;
-        }
-
-        .progress-bg {
-            width: 100%;
-            height: 10px;
-            background-color: #232d3f;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #38bdf8, #818cf8);
-            transition: width 0.4s ease;
-        }
-
-        /* Two Column Panel Section */
-        .panels-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 2rem;
-        }
-
-        @media (max-width: 850px) {
-            .panels-grid { grid-template-columns: 1fr; }
-        }
-
-        .panel {
-            background-color: #161e2e;
-            border: 1px solid #232d3f;
-            border-radius: 12px;
-            padding: 1.5rem;
-        }
-
-        .panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.2rem;
-            padding-bottom: 0.8rem;
-            border-bottom: 1px solid #232d3f;
-        }
-
-        .panel-header h3 {
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Connected Accounts & Files List Styling */
-        .list-group {
-            list-style: none;
-        }
-
-        .list-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.9rem 1rem;
-            background-color: #0b0f19;
-            border: 1px solid #232d3f;
-            border-radius: 8px;
-            margin-bottom: 0.8rem;
-            position: relative;
-        }
-
-        .item-details {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .item-title {
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-
-        .item-sub {
-            font-size: 0.8rem;
-            color: #94a3b8;
-        }
-
-        /* 3-Dots Dropdown Menu */
-        .dropdown {
-            position: relative;
-        }
-
-        .three-dots-btn {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            font-size: 1.2rem;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        .three-dots-btn:hover {
-            color: #ffffff;
-            background-color: #232d3f;
-        }
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background-color: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            z-index: 10;
-            min-width: 130px;
-        }
-
-        .dropdown-menu.show {
-            display: block;
-        }
-
-        .dropdown-menu button {
-            width: 100%;
-            padding: 10px 12px;
-            background: none;
-            border: none;
-            color: #e2e8f0;
-            text-align: left;
-            font-size: 0.85rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .dropdown-menu button:hover {
-            background-color: #334155;
-        }
-
-        .dropdown-menu button.danger {
-            color: #f87171;
-        }
-
-        .dropdown-menu button.danger:hover {
-            background-color: rgba(239, 68, 68, 0.2);
-        }
-
-        footer {
-            text-align: center;
-            padding: 1.5rem;
-            color: #64748b;
-            font-size: 0.85rem;
-            border-top: 1px solid #161e2e;
-            margin-top: 2rem;
-        }
-    </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Premium Cloud Console</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--bg:#090d16;--panel:#111827;--card:#1f293d;--border:#2b384e;--text:#f1f5f9;--sub:#94a3b8;--accent:#38bdf8;--accent-h:#0284c7;--sh:rgba(0,0,0,0.4)}
+[data-theme="light"]{--bg:#f8fafc;--panel:#fff;--card:#f1f5f9;--border:#e2e8f0;--text:#0f172a;--sub:#64748b;--accent:#0284c7;--accent-h:#0369a1;--sh:rgba(0,0,0,0.08)}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,sans-serif;transition:all 0.2s ease}
+body{background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+header{background:var(--panel);padding:0.7rem 1rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.logo{font-size:1.1rem;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:6px}
+.h-act{display:flex;align-items:center;gap:6px}
+.btn-t{background:var(--card);border:1px solid var(--border);color:var(--text);width:34px;height:34px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.btn-p{background:var(--accent);color:#fff;border:none;padding:0.45rem 0.8rem;border-radius:8px;font-weight:600;font-size:0.8rem;cursor:pointer;display:flex;align-items:center;gap:5px}
+.btn-p:hover{background:var(--accent-h)}
+.container{max-width:1000px;margin:1rem auto;padding:0 0.8rem;width:100%;flex:1}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.7rem;margin-bottom:1rem}
+.stat-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:0.7rem;display:flex;align-items:center;gap:0.6rem}
+.stat-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.i-tot{background:rgba(56,189,248,0.15);color:#38bdf8}.i-usd{background:rgba(239,68,68,0.15);color:#ef4444}.i-fre{background:rgba(34,197,94,0.15);color:#22c55e}.i-acc{background:rgba(168,85,247,0.15);color:#a855f7}
+.stat-info h4{font-size:0.7rem;color:var(--sub);font-weight:500}.stat-info p{font-size:1rem;font-weight:700}
+.p-box{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:0.8rem;margin-bottom:1rem}
+.p-title{display:flex;justify-content:space-between;margin-bottom:0.4rem;font-size:0.78rem;color:var(--sub)}
+.p-bg{width:100%;height:7px;background:var(--card);border-radius:4px;overflow:hidden}
+.p-fill{height:100%;width:0%;background:linear-gradient(90deg,#38bdf8,#818cf8);border-radius:4px;transition:width 0.4s}
+.panels-grid{display:grid;grid-template-columns:1fr;gap:1rem}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:0.9rem}
+.p-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.7rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border)}
+.p-head h3{font-size:0.9rem;display:flex;align-items:center;gap:6px}
+.list-g{list-style:none}
+.list-i{display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.7rem;background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:0.5rem}
+.i-det{display:flex;align-items:center;gap:8px}
+.i-title{font-size:0.82rem;font-weight:600}.i-sub{font-size:0.72rem;color:var(--sub)}
+.dropdown{position:relative}
+.dots-btn{background:none;border:none;color:var(--sub);font-size:1rem;padding:2px 6px;cursor:pointer}
+.d-menu{display:none;position:absolute;right:0;top:100%;background:var(--panel);border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 12px var(--sh);z-index:10;min-width:110px}
+.d-menu.show{display:block}
+.d-menu button{width:100%;padding:7px 9px;background:none;border:none;color:var(--text);text-align:left;font-size:0.78rem;cursor:pointer;display:flex;align-items:center;gap:5px}
+.d-menu button.danger{color:#ef4444}
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(3px);z-index:1000;align-items:center;justify-content:center;padding:1rem}
+.modal-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:1.2rem;width:100%;max-width:340px}
+.modal-card h3{font-size:1rem;margin-bottom:0.4rem;display:flex;align-items:center;gap:6px}
+.modal-card p{font-size:0.78rem;color:var(--sub);margin-bottom:0.8rem}
+.modal-card input{width:100%;padding:0.6rem;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text);outline:none;font-size:0.85rem;margin-bottom:1rem}
+.modal-act{display:flex;justify-content:flex-end;gap:6px}
+.btn-c{background:transparent;border:1px solid var(--border);color:var(--sub);padding:0.45rem 0.8rem;border-radius:6px;font-size:0.78rem;cursor:pointer}
+footer{text-align:center;padding:1rem;color:var(--sub);font-size:0.72rem;border-top:1px solid var(--border);margin-top:auto}
+</style>
 </head>
-<body>
-
-    <!-- Header Navbar -->
-    <header>
-        <div class="logo">
-            <i class="fa-solid fa-cloud-bolt"></i> Premium Cloud Console
-        </div>
-        <div class="header-actions">
-            <button class="btn-primary" onclick="addNewGmail()"><i class="fa-solid fa-plus"></i> Connect Gmail ID</button>
-        </div>
-    </header>
-
-    <!-- Main Container -->
-    <div class="container">
-
-        <!-- Storage Overview Stats -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon icon-total"><i class="fa-solid fa-database"></i></div>
-                <div class="stat-info">
-                    <h4>कुल स्टोरेज (Total Storage)</h4>
-                    <p id="totalStorageText">0 GB</p>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon icon-used"><i class="fa-solid fa-chart-pie"></i></div>
-                <div class="stat-info">
-                    <h4>इस्तेमाल स्टोरेज (Used)</h4>
-                    <p id="usedStorageText">0 GB</p>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon icon-free"><i class="fa-solid fa-hard-drive"></i></div>
-                <div class="stat-info">
-                    <h4>ख़ाली स्थान (Free)</h4>
-                    <p id="freeStorageText">0 GB</p>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon icon-accounts"><i class="fa-brands fa-google"></i></div>
-                <div class="stat-info">
-                    <h4>कनेक्टेड IDs</h4>
-                    <p id="accountCountText">0 Accounts</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Progress Bar -->
-        <div class="progress-box">
-            <div class="progress-title">
-                <span><strong>स्टोरेज उपयोग स्थिति (Storage Allocation)</strong></span>
-                <span id="percentText">0% Used</span>
-            </div>
-            <div class="progress-bg">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-        </div>
-
-        <!-- Panels Section -->
-        <div class="panels-grid">
-
-            <!-- Connected Accounts Panel -->
-            <div class="panel">
-                <div class="panel-header">
-                    <h3><i class="fa-brands fa-google text-sky"></i> Gmail Accounts</h3>
-                </div>
-                <ul class="list-group" id="accountList">
-                    <!-- Dynamic Gmail List will load here -->
-                </ul>
-            </div>
-
-            <!-- Cloud Files Panel -->
-            <div class="panel">
-                <div class="panel-header">
-                    <h3><i class="fa-solid fa-folder-open text-sky"></i> फ़ाइल प्रबंधन (Files)</h3>
-                    <button class="btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" onclick="uploadNewFile()"><i class="fa-solid fa-upload"></i> Upload</button>
-                </div>
-                <ul class="list-group" id="fileList">
-                    <!-- Dynamic File List will load here -->
-                </ul>
-            </div>
-
-        </div>
-
+<body data-theme="dark">
+<header>
+    <div class="logo"><i class="fa-solid fa-cloud-bolt"></i> Premium Cloud</div>
+    <div class="h-act">
+        <button class="btn-t" onclick="toggleTheme()" id="themeBtn"><i class="fa-solid fa-sun"></i></button>
+        <button class="btn-p" onclick="openLoginModal()"><i class="fa-solid fa-plus"></i> Connect ID</button>
     </div>
-
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2026 Premium Cloud Storage Manager. All rights reserved.</p>
-    </footer>
-
-    <!-- Interactive Logic JavaScript -->
-    <script>
-        // Initial Connected Accounts Data (Real Gmail format)
-        let accounts = [
-            { email: "user.cloud1@gmail.com", used: 12.4, total: 15 },
-            { email: "backup.main2@gmail.com", used: 8.1, total: 15 }
-        ];
-
-        // Sample Files Data
-        let files = [
-            { name: "Important_Project.zip", size: "1.2 GB", email: "user.cloud1@gmail.com" },
-            { name: "Document_Backup.pdf", size: "45 MB", email: "backup.main2@gmail.com" }
-        ];
-
-        // Recalculate and update stats dynamically
-        function updateDashboard() {
-            let totalStorageGB = accounts.length * 15;
-            let totalUsedGB = accounts.reduce((acc, curr) => acc + curr.used, 0);
-            let freeStorageGB = totalStorageGB - totalUsedGB;
-
-            // Convert to TB if exceeds 1000 GB
-            let displayTotal = totalStorageGB >= 1000 ? (totalStorageGB / 1024).toFixed(2) + " TB" : totalStorageGB.toFixed(1) + " GB";
-            let displayUsed = totalUsedGB >= 1000 ? (totalUsedGB / 1024).toFixed(2) + " TB" : totalUsedGB.toFixed(1) + " GB";
-            let displayFree = freeStorageGB >= 1000 ? (freeStorageGB / 1024).toFixed(2) + " TB" : freeStorageGB.toFixed(1) + " GB";
-
-            document.getElementById('totalStorageText').innerText = displayTotal;
-            document.getElementById('usedStorageText').innerText = displayUsed;
-            document.getElementById('freeStorageText').innerText = displayFree;
-            document.getElementById('accountCountText').innerText = accounts.length + " Accounts";
-
-            // Update Progress Bar
-            let percentage = totalStorageGB > 0 ? ((totalUsedGB / totalStorageGB) * 100).toFixed(1) : 0;
-            document.getElementById('percentText').innerText = percentage + "% Used";
-            document.getElementById('progressFill').style.width = percentage + "%";
-
-            renderAccounts();
-            renderFiles();
-        }
-
-        // Render Gmail Accounts
-        function renderAccounts() {
-            let accountListUI = document.getElementById('accountList');
-            accountListUI.innerHTML = "";
-
-            if(accounts.length === 0) {
-                accountListUI.innerHTML = "<li style='color:#64748b; text-align:center; padding:1rem;'>कोई Gmail ID कनेक्टेड नहीं है।</li>";
-                return;
-            }
-
-            accounts.forEach((acc, index) => {
-                accountListUI.innerHTML += `
-                    <li class="list-item">
-                        <div class="item-details">
-                            <i class="fa-solid fa-envelope" style="color:#38bdf8;"></i>
-                            <div>
-                                <div class="item-title">${acc.email}</div>
-                                <div class="item-sub">${acc.used} GB / ${acc.total} GB Used</div>
-                            </div>
-                        </div>
-                        <div class="dropdown">
-                            <button class="three-dots-btn" onclick="toggleDropdown(event)"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                            <div class="dropdown-menu">
-                                <button class="danger" onclick="removeAccount(${index})"><i class="fa-solid fa-trash-can"></i> Remove ID</button>
-                            </div>
-                        </div>
-                    </li>
-                `;
-            });
-        }
-
-        // Render Files List
-        function renderFiles() {
-            let fileListUI = document.getElementById('fileList');
-            fileListUI.innerHTML = "";
-
-            if(files.length === 0) {
-                fileListUI.innerHTML = "<li style='color:#64748b; text-align:center; padding:1rem;'>कोई फ़ाइल मौजूद नहीं है।</li>";
-                return;
-            }
-
-            files.forEach((file, index) => {
-                fileListUI.innerHTML += `
-                    <li class="list-item">
-                        <div class="item-details">
-                            <i class="fa-solid fa-file-lines" style="color:#38bdf8; font-size:1.2rem;"></i>
-                            <div>
-                                <div class="item-title">${file.name}</div>
-                                <div class="item-sub">${file.size} • ${file.email}</div>
-                            </div>
-                        </div>
-                        <div class="dropdown">
-                            <button class="three-dots-btn" onclick="toggleDropdown(event)"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                            <div class="dropdown-menu">
-                                <button onclick="downloadFile('${file.name}')"><i class="fa-solid fa-download"></i> Download</button>
-                                <button class="danger" onclick="deleteFile(${index})"><i class="fa-solid fa-trash-can"></i> Delete</button>
-                            </div>
-                        </div>
-                    </li>
-                `;
-            });
-        }
-
-        // Toggle 3-Dots Menu
-        function toggleDropdown(event) {
-            event.stopPropagation();
-            closeAllDropdowns();
-            let menu = event.currentTarget.nextElementSibling;
-            menu.classList.toggle('show');
-        }
-
-        function closeAllDropdowns() {
-            document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
-        }
-
-        window.onclick = function() {
-            closeAllDropdowns();
-        };
-
-        // Add Real Gmail ID
-        function addNewGmail() {
-            let email = prompt("अपनी वास्तविक Gmail ID दर्ज करें:");
-            if (email) {
-                if(!email.includes('@gmail.com')) {
-                    alert('कृपया वैध @gmail.com एड्रेस ही दर्ज करें!');
-                    return;
-                }
-                accounts.push({ email: email.trim(), used: 0.0, total: 15 });
-                updateDashboard();
-                alert('Gmail ID सफलतापूर्वक जोड़ दी गई!');
-            }
-        }
-
-        // Remove Gmail ID
-        function removeAccount(index) {
-            if(confirm('क्या आप सच में इस Gmail ID को रिमूव करना चाहते हैं?')) {
-                accounts.splice(index, 1);
-                updateDashboard();
-            }
-        }
-
-        // Download File
-        function downloadFile(filename) {
-            alert('डाउनलोडिंग शुरू: ' + filename);
-        }
-
-        // Delete File
-        function deleteFile(index) {
-            if(confirm('क्या आप इस फ़ाइल को डिलीट करना चाहते हैं?')) {
-                files.splice(index, 1);
-                updateDashboard();
-            }
-        }
-
-        // Upload File
-        function uploadNewFile() {
-            if(accounts.length === 0) {
-                alert('फ़ाइल अपलोड करने से पहले कम से कम एक Gmail ID ऐड करें!');
-                return;
-            }
-            let fileName = prompt("अपलोड के लिए फ़ाइल का नाम लिखें:");
-            if(fileName) {
-                files.push({ name: fileName, size: "15 MB", email: accounts[0].email });
-                updateDashboard();
-                alert('फ़ाइल सफलतापूर्वक अपलोड हो गई!');
-            }
-        }
-
-        // Initialize on page load
-        updateDashboard();
-    </script>
+</header>
+<div class="container">
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon i-tot"><i class="fa-solid fa-database"></i></div><div class="stat-info"><h4>कुल स्टोरेज</h4><p id="totalStorageText">0 GB</p></div></div>
+        <div class="stat-card"><div class="stat-icon i-usd"><i class="fa-solid fa-chart-pie"></i></div><div class="stat-info"><h4>इस्तेमाल स्टोरेज</h4><p id="usedStorageText">0 GB</p></div></div>
+        <div class="stat-card"><div class="stat-icon i-fre"><i class="fa-solid fa-hard-drive"></i></div><div class="stat-info"><h4>ख़ाली स्थान</h4><p id="freeStorageText">0 GB</p></div></div>
+        <div class="stat-card"><div class="stat-icon i-acc"><i class="fa-brands fa-google"></i></div><div class="stat-info"><h4>कनेक्टेड IDs</h4><p id="accountCountText">0 Accounts</p></div></div>
+    </div>
+    <div class="p-box">
+        <div class="p-title"><span>स्टोरेज उपयोग स्थिति</span><span id="percentText">0% Used</span></div>
+        <div class="p-bg"><div class="p-fill" id="progressFill"></div></div>
+    </div>
+    <div class="panels-grid">
+        <div class="panel">
+            <div class="p-head"><h3><i class="fa-brands fa-google" style="color:var(--accent);"></i> Gmail Accounts</h3></div>
+            <ul class="list-g" id="accountList"></ul>
+        </div>
+        <div class="panel">
+            <div class="p-head">
+                <h3><i class="fa-solid fa-folder-open" style="color:var(--accent);"></i> फ़ाइलें (Files)</h3>
+                <button class="btn-p" style="padding:0.3rem 0.6rem;font-size:0.75rem" onclick="uploadNewFile()"><i class="fa-solid fa-upload"></i> Upload</button>
+            </div>
+            <ul class="list-g" id="fileList"></ul>
+        </div>
+    </div>
+</div>
+<div class="modal-overlay" id="loginModal">
+    <div class="modal-card">
+        <h3><i class="fa-brands fa-google" style="color:#ea4335"></i> Connect Gmail ID</h3>
+        <p>अपनी असली Gmail ID दर्ज करें:</p>
+        <input type="email" id="gmailInput" placeholder="example@gmail.com"/>
+        <div class="modal-act">
+            <button class="btn-c" onclick="closeLoginModal()">Cancel</button>
+            <button class="btn-p" onclick="submitGmailID()">Connect ID</button>
+        </div>
+    </div>
+</div>
+<footer><p>&copy; 2026 Premium Cloud Services.</p></footer>
+<script>
+let accounts=[],files=[];
+function toggleTheme(){
+    const b=document.body,t=document.getElementById('themeBtn');
+    if(b.getAttribute('data-theme')==='dark'){b.setAttribute('data-theme','light');t.innerHTML='<i class="fa-solid fa-moon"></i>';}
+    else{b.setAttribute('data-theme','dark');t.innerHTML='<i class="fa-solid fa-sun"></i>';}
+}
+function openLoginModal(){document.getElementById('loginModal').style.display='flex';document.getElementById('gmailInput').focus();}
+function closeLoginModal(){document.getElementById('loginModal').style.display='none';document.getElementById('gmailInput').value='';}
+function submitGmailID(){
+    let e=document.getElementById('gmailInput').value.trim();
+    if(e&&e.includes('@gmail.com')){accounts.push({email:e,used:0.0,total:15});closeLoginModal();updateDashboard();}
+    else{alert('सही @gmail.com दर्ज करें!');}
+}
+function updateDashboard(){
+    let tot=accounts.length*15,usd=accounts.reduce((a,c)=>a+c.used,0),fre=tot-usd;
+    document.getElementById('totalStorageText').innerText=tot>=1000?(tot/1024).toFixed(2)+" TB":tot.toFixed(1)+" GB";
+    document.getElementById('usedStorageText').innerText=usd>=1000?(usd/1024).toFixed(2)+" TB":usd.toFixed(1)+" GB";
+    document.getElementById('freeStorageText').innerText=fre>=1000?(fre/1024).toFixed(2)+" TB":fre.toFixed(1)+" GB";
+    document.getElementById('accountCountText').innerText=accounts.length+" Accounts";
+    let p=tot>0?((usd/tot)*100).toFixed(1):0;
+    document.getElementById('percentText').innerText=p+"% Used";
+    document.getElementById('progressFill').style.width=p+"%";
+    renderAccounts();renderFiles();
+}
+function renderAccounts(){
+    let a=document.getElementById('accountList');a.innerHTML="";
+    if(accounts.length===0){a.innerHTML="<li style='color:var(--sub);text-align:center;padding:0.6rem;font-size:0.78rem'>कोई ID नहीं है।</li>";return;}
+    accounts.forEach((acc,i)=>{
+        a.innerHTML+=`<li class="list-i"><div class="i-det"><i class="fa-solid fa-envelope" style="color:var(--accent)"></i><div><div class="i-title">${acc.email}</div><div class="i-sub">${acc.used} / ${acc.total} GB</div></div></div><div class="dropdown"><button class="dots-btn" onclick="toggleDropdown(event)"><i class="fa-solid fa-ellipsis-vertical"></i></button><div class="d-menu"><button class="danger" onclick="removeAccount(${i})"><i class="fa-solid fa-trash-can"></i> Remove</button></div></div></li>`;
+    });
+}
+function renderFiles(){
+    let f=document.getElementById('fileList');f.innerHTML="";
+    if(files.length===0){f.innerHTML="<li style='color:var(--sub);text-align:center;padding:0.6rem;font-size:0.78rem'>कोई फ़ाइल नहीं है।</li>";return;}
+    files.forEach((file,i)=>{
+        f.innerHTML+=`<li class="list-i"><div class="i-det"><i class="fa-solid fa-file-lines" style="color:var(--accent)"></i><div><div class="i-title">${file.name}</div><div class="i-sub">${file.size} • ${file.email}</div></div></div><div class="dropdown"><button class="dots-btn" onclick="toggleDropdown(event)"><i class="fa-solid fa-ellipsis-vertical"></i></button><div class="d-menu"><button onclick="alert('Downloading: ${file.name}')"><i class="fa-solid fa-download"></i> Download</button><button class="danger" onclick="deleteFile(${i})"><i class="fa-solid fa-trash-can"></i> Delete</button></div></div></li>`;
+    });
+}
+function toggleDropdown(e){e.stopPropagation();closeAllDropdowns();e.currentTarget.nextElementSibling.classList.toggle('show');}
+function closeAllDropdowns(){document.querySelectorAll('.d-menu').forEach(m=>m.classList.remove('show'));}
+window.onclick=closeAllDropdowns;
+function removeAccount(i){accounts.splice(i,1);updateDashboard();}
+function deleteFile(i){files.splice(i,1);updateDashboard();}
+function uploadNewFile(){
+    if(accounts.length===0){openLoginModal();return;}
+    let n=prompt("फ़ाइल नाम:");if(n){files.push({name:n,size:"12 MB",email:accounts[0].email});updateDashboard();}
+}
+updateDashboard();
+</script>
 </body>
 </html>
