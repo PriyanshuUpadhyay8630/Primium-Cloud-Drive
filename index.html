@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Cloud - Secure Cloud Storage</title>
-    <!-- Font Awesome Icons -->
+    <title>Premium Cloud - Private Cloud Storage</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -22,7 +21,7 @@
             flex-direction: column;
         }
 
-        /* Header Navigation */
+        /* Header */
         header {
             background-color: #1e293b;
             padding: 1rem 2rem;
@@ -41,35 +40,32 @@
             gap: 10px;
         }
 
-        .btn-google {
-            background-color: #ffffff;
+        .btn-login {
+            background-color: #38bdf8;
             color: #0f172a;
             border: none;
             padding: 0.6rem 1.2rem;
             border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
             text-decoration: none;
+            transition: all 0.3s ease;
         }
 
-        .btn-google:hover {
-            background-color: #e2e8f0;
-            transform: translateY(-2px);
+        .btn-login:hover {
+            background-color: #0284c7;
+            color: #ffffff;
         }
 
         /* Hero Section */
         .hero {
             text-align: center;
-            padding: 4rem 1rem 2rem;
+            padding: 3rem 1rem 1rem;
         }
 
         .hero h1 {
-            font-size: 2.8rem;
-            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
             color: #ffffff;
         }
 
@@ -77,28 +73,28 @@
             color: #94a3b8;
             font-size: 1.1rem;
             max-width: 600px;
-            margin: 0 auto 2rem;
+            margin: 0 auto;
         }
 
-        /* Pricing Section */
+        /* Pricing Cards */
         .pricing-section {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
             flex-grow: 1;
         }
 
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
         }
 
         .card {
             background-color: #1e293b;
             border: 1px solid #334155;
             border-radius: 12px;
-            padding: 2rem;
+            padding: 1.8rem;
             text-align: center;
             position: relative;
             transition: transform 0.3s ease, border-color 0.3s ease;
@@ -122,14 +118,14 @@
             background-color: #38bdf8;
             color: #0f172a;
             padding: 2px 12px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: bold;
             border-radius: 20px;
             text-transform: uppercase;
         }
 
         .card h3 {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             margin-bottom: 0.5rem;
         }
 
@@ -137,21 +133,22 @@
             font-size: 2rem;
             font-weight: bold;
             color: #38bdf8;
-            margin: 1rem 0;
+            margin: 0.8rem 0;
         }
 
         .card ul {
             list-style: none;
-            margin: 1.5rem 0;
+            margin: 1.2rem 0;
             text-align: left;
             color: #cbd5e1;
+            font-size: 0.95rem;
         }
 
         .card ul li {
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.6rem;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .card ul li i {
@@ -163,9 +160,9 @@
             background-color: #38bdf8;
             color: #0f172a;
             border: none;
-            padding: 0.8rem;
+            padding: 0.7rem;
             border-radius: 6px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: bold;
             cursor: pointer;
             transition: background 0.3s ease;
@@ -180,71 +177,68 @@
         footer {
             background-color: #0b0f19;
             text-align: center;
-            padding: 1.5rem;
+            padding: 1.2rem;
             color: #64748b;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             border-top: 1px solid #1e293b;
         }
     </style>
 </head>
 <body>
 
-    <!-- Header / Navbar -->
+    <!-- Header -->
     <header>
         <div class="logo">
             <i class="fa-solid fa-cloud"></i> Premium Cloud
         </div>
-        <!-- Google OAuth backend login route -->
-        <a href="/login" class="btn-google">
-            <i class="fa-brands fa-google"></i> Sign in with Google
-        </a>
+        <a href="#" class="btn-login">Login</a>
     </header>
 
-    <!-- Main Content -->
+    <!-- Hero Section -->
     <div class="hero">
-        <h1>सुरक्षित और असीमित क्लाउड स्टोरेज</h1>
-        <p>अपने सभी डेटा को सुरक्षित रखें और कहीं से भी एक्सेस करें। अपनी आवश्यकता अनुसार बेस्ट प्लान चुनें।</p>
+        <h1>सुरक्षित प्राइवेट क्लाउड स्टोरेज</h1>
+        <p>अपनी ज़रूरत के अनुसार बेस्ट स्टोरेज प्लान चुनें और अपना डेटा सुरक्षित रखें।</p>
     </div>
 
     <!-- Storage Plans -->
     <section class="pricing-section">
         <div class="pricing-grid">
             
-            <!-- Basic Plan -->
+            <!-- 15 GB Plan -->
             <div class="card">
-                <h3>Starter Plan</h3>
+                <h3>Starter</h3>
                 <div class="storage-size">15 GB</div>
                 <ul>
+                    <li><i class="fa-solid fa-check"></i> 100% Safe Storage</li>
                     <li><i class="fa-solid fa-check"></i> High Speed Access</li>
-                    <li><i class="fa-solid fa-check"></i> 24/7 File Availability</li>
-                    <li><i class="fa-solid fa-check"></i> Basic Encryption</li>
+                    <li><i class="fa-solid fa-check"></i> 24/7 Available</li>
                 </ul>
-                <button class="select-btn" onclick="loginRedirect()">Get Started</button>
+                <button class="select-btn">Choose Plan</button>
             </div>
 
             <!-- 60 GB Plan -->
             <div class="card featured">
-                <div class="badge">Popular Choice</div>
-                <h3>Standard Plan</h3>
+                <div class="badge">Popular</div>
+                <h3>Standard</h3>
                 <div class="storage-size">60 GB</div>
                 <ul>
                     <li><i class="fa-solid fa-check"></i> Fast Upload & Download</li>
-                    <li><i class="fa-solid fa-check"></i> Multi-Device Sync</li>
-                    <li><i class="fa-solid fa-check"></i> Enhanced Security</li>
+                    <li><i class="fa-solid fa-check"></i> Multi-Device Access</li>
+                    <li><i class="fa-solid fa-check"></i> Secure Cloud</li>
                 </ul>
-                <button class="select-btn" onclick="loginRedirect()">Get Started</button>
+                <button class="select-btn">Choose Plan</button>
             </div>
 
-            <!-- Pro Plan -->
+            <!-- 100 GB Plan -->
             <div class="card">
-                <h3>Pro Plan</h3>
+                <h3>Pro</h3>
                 <div class="storage-size">100 GB</div>
                 <ul>
-                    <li><i class="fa-solid fa-check"></i> Maximum Speed</li>
+                    <li><i class="fa-solid fa-check"></i> Max Upload Speed</li>
+                    <li><i class="fa-solid fa-check"></i> Dedicated Space</li>
                     <li><i class="fa-solid fa-check"></i> Priority Support</li>
-                    <li><i class="fa-solid fa-check"></i> Advanced Backup System</li>
                 </ul>
-                <button class="select-btn" onclick="loginRedirect()">Get Started</button>
+                <button class="select-btn">Choose Plan</button>
             </div>
 
         </div>
@@ -252,15 +246,8 @@
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2026 Premium Cloud Storage Services. All rights reserved.</p>
+        <p>&copy; 2026 Premium Cloud Services. All rights reserved.</p>
     </footer>
 
-    <script>
-        function loginRedirect() {
-            // Redirects user to Node.js backend OAuth route
-            window.location.href = '/login';
-        }
-    </script>
 </body>
 </html>
-
