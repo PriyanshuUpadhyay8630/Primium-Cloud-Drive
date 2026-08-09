@@ -1,253 +1,65 @@
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Cloud - Private Cloud Storage</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+<!-- Storage Display Meter -->
+<div id="storage-info">
+  <p>Used Storage: <span id="used-storage">Loading...</span> GB / <span id="total-storage">--</span> GB</p>
+</div>
 
-        body {
-            background-color: #0f172a;
-            color: #f8fafc;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+<!-- Upload Form -->
+<input type="file" id="fileInput">
+<button onclick="uploadFile()">Upload File</button>
 
-        /* Header */
-        header {
-            background-color: #1e293b;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #334155;
-        }
+<script>
+const WEB_APP_URL = "YAHAN_APNA_APPS_SCRIPT_WEB_APP_URL_DAALEIN";
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #38bdf8;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+// Fetch Live Storage Stats
+async function fetchStorage() {
+  try {
+    let response = await fetch(WEB_APP_URL);
+    let data = await response.json();
+    document.getElementById("used-storage").innerText = data.used;
+    document.getElementById("total-storage").innerText = data.total;
+  } catch (error) {
+    console.error("Error fetching storage:", error);
+  }
+}
 
-        .btn-login {
-            background-color: #38bdf8;
-            color: #0f172a;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
+// Upload File to Drive
+async function uploadFile() {
+  let fileInput = document.getElementById("fileInput");
+  if (fileInput.files.length === 0) {
+    alert("Pehle file select karein!");
+    return;
+  }
 
-        .btn-login:hover {
-            background-color: #0284c7;
-            color: #ffffff;
-        }
+  let file = fileInput.files[0];
+  let reader = new FileReader();
 
-        /* Hero Section */
-        .hero {
-            text-align: center;
-            padding: 3rem 1rem 1rem;
-        }
+  reader.onload = async function() {
+    let base64Data = reader.result.split(',')[1];
+    let payload = {
+      filename: file.name,
+      mimeType: file.type,
+      bytes: base64Data
+    };
 
-        .hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.8rem;
-            color: #ffffff;
-        }
+    alert("Uploading... Kripya intezaar karein.");
 
-        .hero p {
-            color: #94a3b8;
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
+    let response = await fetch(WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
 
-        /* Pricing Cards */
-        .pricing-section {
-            max-width: 1000px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-            flex-grow: 1;
-        }
+    let result = await response.json();
+    if (result.status === "success") {
+      alert("File successfully upload ho gayi!");
+      fetchStorage(); // Storage update karne ke liye
+    } else {
+      alert("Upload fail ho gaya: " + result.message);
+    }
+  };
 
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
-        }
+  reader.readAsDataURL(file);
+}
 
-        .card {
-            background-color: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 1.8rem;
-            text-align: center;
-            position: relative;
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: #38bdf8;
-        }
-
-        .card.featured {
-            border: 2px solid #38bdf8;
-            background-color: #0f2942;
-        }
-
-        .badge {
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #38bdf8;
-            color: #0f172a;
-            padding: 2px 12px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            border-radius: 20px;
-            text-transform: uppercase;
-        }
-
-        .card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .storage-size {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #38bdf8;
-            margin: 0.8rem 0;
-        }
-
-        .card ul {
-            list-style: none;
-            margin: 1.2rem 0;
-            text-align: left;
-            color: #cbd5e1;
-            font-size: 0.95rem;
-        }
-
-        .card ul li {
-            margin-bottom: 0.6rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .card ul li i {
-            color: #22c55e;
-        }
-
-        .select-btn {
-            width: 100%;
-            background-color: #38bdf8;
-            color: #0f172a;
-            border: none;
-            padding: 0.7rem;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .select-btn:hover {
-            background-color: #0284c7;
-            color: #ffffff;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #0b0f19;
-            text-align: center;
-            padding: 1.2rem;
-            color: #64748b;
-            font-size: 0.85rem;
-            border-top: 1px solid #1e293b;
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Header -->
-    <header>
-        <div class="logo">
-            <i class="fa-solid fa-cloud"></i> Premium Cloud
-        </div>
-        <a href="#" class="btn-login">Login</a>
-    </header>
-
-    <!-- Hero Section -->
-    <div class="hero">
-        <h1>सुरक्षित प्राइवेट क्लाउड स्टोरेज</h1>
-        <p>अपनी ज़रूरत के अनुसार बेस्ट स्टोरेज प्लान चुनें और अपना डेटा सुरक्षित रखें।</p>
-    </div>
-
-    <!-- Storage Plans -->
-    <section class="pricing-section">
-        <div class="pricing-grid">
-            
-            <!-- 15 GB Plan -->
-            <div class="card">
-                <h3>Starter</h3>
-                <div class="storage-size">15 GB</div>
-                <ul>
-                    <li><i class="fa-solid fa-check"></i> 100% Safe Storage</li>
-                    <li><i class="fa-solid fa-check"></i> High Speed Access</li>
-                    <li><i class="fa-solid fa-check"></i> 24/7 Available</li>
-                </ul>
-                <button class="select-btn">Choose Plan</button>
-            </div>
-
-            <!-- 60 GB Plan -->
-            <div class="card featured">
-                <div class="badge">Popular</div>
-                <h3>Standard</h3>
-                <div class="storage-size">60 GB</div>
-                <ul>
-                    <li><i class="fa-solid fa-check"></i> Fast Upload & Download</li>
-                    <li><i class="fa-solid fa-check"></i> Multi-Device Access</li>
-                    <li><i class="fa-solid fa-check"></i> Secure Cloud</li>
-                </ul>
-                <button class="select-btn">Choose Plan</button>
-            </div>
-
-            <!-- 100 GB Plan -->
-            <div class="card">
-                <h3>Pro</h3>
-                <div class="storage-size">100 GB</div>
-                <ul>
-                    <li><i class="fa-solid fa-check"></i> Max Upload Speed</li>
-                    <li><i class="fa-solid fa-check"></i> Dedicated Space</li>
-                    <li><i class="fa-solid fa-check"></i> Priority Support</li>
-                </ul>
-                <button class="select-btn">Choose Plan</button>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2026 Premium Cloud Services. All rights reserved.</p>
-    </footer>
-
-</body>
-</html>
+// Page load hote hi storage stats fetch karein
+window.onload = fetchStorage;
+</script>
