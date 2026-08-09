@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Cloud - Storage Dashboard</title>
+    <title>Premium Cloud Storage Console</title>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -11,44 +11,58 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         body {
-            background-color: #0f172a;
-            color: #f8fafc;
+            background-color: #0b0f19;
+            color: #e2e8f0;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        /* Header Navigation */
+        /* Navbar Header */
         header {
-            background-color: #1e293b;
+            background-color: #161e2e;
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid #232d3f;
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
+            font-size: 1.4rem;
+            font-weight: 700;
             color: #38bdf8;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .user-profile {
+        .header-actions {
             display: flex;
             align-items: center;
-            gap: 10px;
-            background-color: #334155;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            gap: 15px;
+        }
+
+        .btn-primary {
+            background-color: #0284c7;
+            color: #ffffff;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #0369a1;
         }
 
         /* Container Layout */
@@ -60,17 +74,17 @@
             flex-grow: 1;
         }
 
-        /* Storage Stats Grid */
+        /* Top Overview Cards */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
         .stat-card {
-            background-color: #1e293b;
-            border: 1px solid #334155;
+            background-color: #161e2e;
+            border: 1px solid #232d3f;
             border-radius: 12px;
             padding: 1.5rem;
             display: flex;
@@ -79,19 +93,21 @@
         }
 
         .stat-icon {
-            width: 50px;
-            height: 50px;
+            width: 52px;
+            height: 52px;
             border-radius: 10px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: justify;
+            align-content: center;
             font-size: 1.5rem;
+            padding-left: 14px;
         }
 
-        .icon-total { background-color: rgba(56, 189, 248, 0.2); color: #38bdf8; }
-        .icon-used { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
-        .icon-free { background-color: rgba(34, 197, 94, 0.2); color: #22c55e; }
-        .icon-accounts { background-color: rgba(168, 85, 247, 0.2); color: #a855f7; }
+        .icon-total { background-color: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+        .icon-used { background-color: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .icon-free { background-color: rgba(34, 197, 94, 0.15); color: #22c55e; }
+        .icon-accounts { background-color: rgba(168, 85, 247, 0.15); color: #a855f7; }
 
         .stat-info h4 {
             font-size: 0.85rem;
@@ -100,56 +116,55 @@
         }
 
         .stat-info p {
-            font-size: 1.4rem;
-            font-weight: bold;
+            font-size: 1.5rem;
+            font-weight: 700;
         }
 
-        /* Storage Progress Bar */
-        .progress-container {
-            background-color: #1e293b;
-            border: 1px solid #334155;
+        /* Storage Usage Progress Bar */
+        .progress-box {
+            background-color: #161e2e;
+            border: 1px solid #232d3f;
             border-radius: 12px;
             padding: 1.5rem;
             margin-bottom: 2rem;
         }
 
-        .progress-header {
+        .progress-title {
             display: flex;
             justify-content: space-between;
             margin-bottom: 0.8rem;
             font-size: 0.95rem;
         }
 
-        .progress-bar-bg {
+        .progress-bg {
             width: 100%;
-            height: 12px;
-            background-color: #334155;
-            border-radius: 6px;
+            height: 10px;
+            background-color: #232d3f;
+            border-radius: 5px;
             overflow: hidden;
         }
 
-        .progress-bar-fill {
+        .progress-fill {
             height: 100%;
-            width: 25%; /* Dynamically calculated */
+            width: 0%;
             background: linear-gradient(90deg, #38bdf8, #818cf8);
-            border-radius: 6px;
             transition: width 0.4s ease;
         }
 
-        /* Accounts & Management Section */
-        .main-section {
+        /* Two Column Panel Section */
+        .panels-grid {
             display: grid;
-            grid-template-columns: 1fr 2fr;
+            grid-template-columns: 1fr 1.5fr;
             gap: 2rem;
         }
 
-        @media (max-width: 768px) {
-            .main-section { grid-template-columns: 1fr; }
+        @media (max-width: 850px) {
+            .panels-grid { grid-template-columns: 1fr; }
         }
 
         .panel {
-            background-color: #1e293b;
-            border: 1px solid #334155;
+            background-color: #161e2e;
+            border: 1px solid #232d3f;
             border-radius: 12px;
             padding: 1.5rem;
         }
@@ -160,134 +175,152 @@
             align-items: center;
             margin-bottom: 1.2rem;
             padding-bottom: 0.8rem;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid #232d3f;
         }
 
-        .btn-action {
-            background-color: #38bdf8;
-            color: #0f172a;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.85rem;
-        }
-
-        .btn-action:hover { background-color: #0284c7; color: #fff; }
-
-        /* Accounts List */
-        .account-list { list-style: none; }
-
-        .account-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.8rem 0;
-            border-bottom: 1px solid #334155;
-        }
-
-        .account-item:last-child { border-bottom: none; }
-
-        .account-email {
+        .panel-header h3 {
+            font-size: 1.1rem;
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 0.9rem;
         }
 
-        .account-storage {
-            font-size: 0.8rem;
-            color: #94a3b8;
+        /* Connected Accounts & Files List Styling */
+        .list-group {
+            list-style: none;
         }
 
-        /* File Manager List */
-        .file-list { list-style: none; }
-
-        .file-item {
+        .list-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.8rem 1rem;
-            background-color: #0f172a;
+            padding: 0.9rem 1rem;
+            background-color: #0b0f19;
+            border: 1px solid #232d3f;
             border-radius: 8px;
             margin-bottom: 0.8rem;
-            border: 1px solid #334155;
+            position: relative;
         }
 
-        .file-details {
+        .item-details {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .file-icon { font-size: 1.3rem; color: #38bdf8; }
-        .file-name { font-size: 0.95rem; font-weight: 500; }
-        .file-size { font-size: 0.8rem; color: #94a3b8; }
-
-        .file-actions {
-            display: flex;
-            gap: 10px;
+        .item-title {
+            font-size: 0.95rem;
+            font-weight: 500;
         }
 
-        .btn-icon {
+        .item-sub {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        /* 3-Dots Dropdown Menu */
+        .dropdown {
+            position: relative;
+        }
+
+        .three-dots-btn {
             background: none;
             border: none;
             color: #94a3b8;
+            font-size: 1.2rem;
+            padding: 5px 10px;
             cursor: pointer;
-            font-size: 1rem;
-            transition: color 0.2s ease;
+            border-radius: 4px;
         }
 
-        .btn-icon.download:hover { color: #22c55e; }
-        .btn-icon.delete:hover { color: #ef4444; }
+        .three-dots-btn:hover {
+            color: #ffffff;
+            background-color: #232d3f;
+        }
 
-        /* Footer */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            z-index: 10;
+            min-width: 130px;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-menu button {
+            width: 100%;
+            padding: 10px 12px;
+            background: none;
+            border: none;
+            color: #e2e8f0;
+            text-align: left;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dropdown-menu button:hover {
+            background-color: #334155;
+        }
+
+        .dropdown-menu button.danger {
+            color: #f87171;
+        }
+
+        .dropdown-menu button.danger:hover {
+            background-color: rgba(239, 68, 68, 0.2);
+        }
+
         footer {
-            background-color: #0b0f19;
             text-align: center;
-            padding: 1.2rem;
+            padding: 1.5rem;
             color: #64748b;
             font-size: 0.85rem;
-            border-top: 1px solid #1e293b;
+            border-top: 1px solid #161e2e;
             margin-top: 2rem;
         }
     </style>
 </head>
 <body>
 
-    <!-- Top Navigation Header -->
+    <!-- Header Navbar -->
     <header>
         <div class="logo">
-            <i class="fa-solid fa-cloud-bolt"></i> Premium Storage Manager
+            <i class="fa-solid fa-cloud-bolt"></i> Premium Cloud Console
         </div>
-        <div class="user-profile">
-            <i class="fa-solid fa-circle-user"></i>
-            <span>My Cloud Console</span>
+        <div class="header-actions">
+            <button class="btn-primary" onclick="addNewGmail()"><i class="fa-solid fa-plus"></i> Connect Gmail ID</button>
         </div>
     </header>
 
-    <!-- Main Dashboard Container -->
+    <!-- Main Container -->
     <div class="container">
 
-        <!-- Top Storage Stats Cards -->
+        <!-- Storage Overview Stats -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon icon-total"><i class="fa-solid fa-server"></i></div>
+                <div class="stat-icon icon-total"><i class="fa-solid fa-database"></i></div>
                 <div class="stat-info">
-                    <h4>कुल स्टोरेज (Total)</h4>
-                    <p id="totalStorage">105 GB</p>
+                    <h4>कुल स्टोरेज (Total Storage)</h4>
+                    <p id="totalStorageText">0 GB</p>
                 </div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-icon icon-used"><i class="fa-solid fa-chart-pie"></i></div>
                 <div class="stat-info">
-                    <h4>भरी हुई (Used)</h4>
-                    <p id="usedStorage">26.2 GB</p>
+                    <h4>इस्तेमाल स्टोरेज (Used)</h4>
+                    <p id="usedStorageText">0 GB</p>
                 </div>
             </div>
 
@@ -295,116 +328,52 @@
                 <div class="stat-icon icon-free"><i class="fa-solid fa-hard-drive"></i></div>
                 <div class="stat-info">
                     <h4>ख़ाली स्थान (Free)</h4>
-                    <p id="freeStorage">78.8 GB</p>
+                    <p id="freeStorageText">0 GB</p>
                 </div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-icon icon-accounts"><i class="fa-brands fa-google"></i></div>
                 <div class="stat-info">
-                    <h4>कनेक्टेड Gmail IDs</h4>
-                    <p id="totalAccounts">7 Accounts</p>
+                    <h4>कनेक्टेड IDs</h4>
+                    <p id="accountCountText">0 Accounts</p>
                 </div>
             </div>
         </div>
 
-        <!-- Visual Storage Progress Bar -->
-        <div class="progress-container">
-            <div class="progress-header">
-                <span><strong>स्टोरेज उपयोग (Storage Usage)</strong></span>
-                <span id="usagePercent">25% Used</span>
+        <!-- Progress Bar -->
+        <div class="progress-box">
+            <div class="progress-title">
+                <span><strong>स्टोरेज उपयोग स्थिति (Storage Allocation)</strong></span>
+                <span id="percentText">0% Used</span>
             </div>
-            <div class="progress-bar-bg">
-                <div class="progress-bar-fill" id="progressBar"></div>
+            <div class="progress-bg">
+                <div class="progress-fill" id="progressFill"></div>
             </div>
         </div>
 
-        <!-- Main Content Area -->
-        <div class="main-section">
+        <!-- Panels Section -->
+        <div class="panels-grid">
 
-            <!-- Connected Gmail Accounts Panel -->
+            <!-- Connected Accounts Panel -->
             <div class="panel">
                 <div class="panel-header">
-                    <h3><i class="fa-brands fa-google"></i> Gmail Accounts</h3>
-                    <button class="btn-action" onclick="addAccount()"><i class="fa-solid fa-plus"></i> Add ID</button>
+                    <h3><i class="fa-brands fa-google text-sky"></i> Gmail Accounts</h3>
                 </div>
-                <ul class="account-list" id="accountList">
-                    <li class="account-item">
-                        <div class="account-email">
-                            <i class="fa-solid fa-envelope text-sky"></i> account1@gmail.com
-                        </div>
-                        <div class="account-storage">14 / 15 GB</div>
-                    </li>
-                    <li class="account-item">
-                        <div class="account-email">
-                            <i class="fa-solid fa-envelope text-sky"></i> account2@gmail.com
-                        </div>
-                        <div class="account-storage">8 / 15 GB</div>
-                    </li>
-                    <li class="account-item">
-                        <div class="account-email">
-                            <i class="fa-solid fa-envelope text-sky"></i> account3@gmail.com
-                        </div>
-                        <div class="account-storage">4.2 / 15 GB</div>
-                    </li>
+                <ul class="list-group" id="accountList">
+                    <!-- Dynamic Gmail List will load here -->
                 </ul>
             </div>
 
-            <!-- File Management Panel -->
+            <!-- Cloud Files Panel -->
             <div class="panel">
                 <div class="panel-header">
-                    <h3><i class="fa-solid fa-folder-open"></i> आपकी फ़ाइलें (Files)</h3>
-                    <button class="btn-action" onclick="uploadFile()"><i class="fa-solid fa-cloud-arrow-up"></i> Upload File</button>
+                    <h3><i class="fa-solid fa-folder-open text-sky"></i> फ़ाइल प्रबंधन (Files)</h3>
+                    <button class="btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" onclick="uploadNewFile()"><i class="fa-solid fa-upload"></i> Upload</button>
                 </div>
-
-                <div class="file-list" id="fileList">
-                    
-                    <!-- File Item 1 -->
-                    <div class="file-item">
-                        <div class="file-details">
-                            <i class="fa-solid fa-file-pdf file-icon"></i>
-                            <div>
-                                <div class="file-name">Important_Document.pdf</div>
-                                <div class="file-size">12.5 MB • account1@gmail.com</div>
-                            </div>
-                        </div>
-                        <div class="file-actions">
-                            <button class="btn-icon download" title="Download" onclick="downloadFile('Important_Document.pdf')"><i class="fa-solid fa-download"></i></button>
-                            <button class="btn-icon delete" title="Delete" onclick="deleteFile(this)"><i class="fa-solid fa-trash-can"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- File Item 2 -->
-                    <div class="file-item">
-                        <div class="file-details">
-                            <i class="fa-solid fa-file-image file-icon"></i>
-                            <div>
-                                <div class="file-name">Backup_Photo_2026.jpg</div>
-                                <div class="file-size">4.8 MB • account2@gmail.com</div>
-                            </div>
-                        </div>
-                        <div class="file-actions">
-                            <button class="btn-icon download" title="Download" onclick="downloadFile('Backup_Photo_2026.jpg')"><i class="fa-solid fa-download"></i></button>
-                            <button class="btn-icon delete" title="Delete" onclick="deleteFile(this)"><i class="fa-solid fa-trash-can"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- File Item 3 -->
-                    <div class="file-item">
-                        <div class="file-details">
-                            <i class="fa-solid fa-file-zipper file-icon"></i>
-                            <div>
-                                <div class="file-name">Data_Archive.zip</div>
-                                <div class="file-size">1.2 GB • account3@gmail.com</div>
-                            </div>
-                        </div>
-                        <div class="file-actions">
-                            <button class="btn-icon download" title="Download" onclick="downloadFile('Data_Archive.zip')"><i class="fa-solid fa-download"></i></button>
-                            <button class="btn-icon delete" title="Delete" onclick="deleteFile(this)"><i class="fa-solid fa-trash-can"></i></button>
-                        </div>
-                    </div>
-
-                </div>
+                <ul class="list-group" id="fileList">
+                    <!-- Dynamic File List will load here -->
+                </ul>
             </div>
 
         </div>
@@ -413,43 +382,178 @@
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2026 Premium Cloud Manager. All rights reserved.</p>
+        <p>&copy; 2026 Premium Cloud Storage Manager. All rights reserved.</p>
     </footer>
 
-    <!-- Interactive JavaScript -->
+    <!-- Interactive Logic JavaScript -->
     <script>
-        // Interactive functions for UI demo
-        function downloadFile(filename) {
-            alert('फ़ाइल डाउनलोड हो रही है: ' + filename);
+        // Initial Connected Accounts Data (Real Gmail format)
+        let accounts = [
+            { email: "user.cloud1@gmail.com", used: 12.4, total: 15 },
+            { email: "backup.main2@gmail.com", used: 8.1, total: 15 }
+        ];
+
+        // Sample Files Data
+        let files = [
+            { name: "Important_Project.zip", size: "1.2 GB", email: "user.cloud1@gmail.com" },
+            { name: "Document_Backup.pdf", size: "45 MB", email: "backup.main2@gmail.com" }
+        ];
+
+        // Recalculate and update stats dynamically
+        function updateDashboard() {
+            let totalStorageGB = accounts.length * 15;
+            let totalUsedGB = accounts.reduce((acc, curr) => acc + curr.used, 0);
+            let freeStorageGB = totalStorageGB - totalUsedGB;
+
+            // Convert to TB if exceeds 1000 GB
+            let displayTotal = totalStorageGB >= 1000 ? (totalStorageGB / 1024).toFixed(2) + " TB" : totalStorageGB.toFixed(1) + " GB";
+            let displayUsed = totalUsedGB >= 1000 ? (totalUsedGB / 1024).toFixed(2) + " TB" : totalUsedGB.toFixed(1) + " GB";
+            let displayFree = freeStorageGB >= 1000 ? (freeStorageGB / 1024).toFixed(2) + " TB" : freeStorageGB.toFixed(1) + " GB";
+
+            document.getElementById('totalStorageText').innerText = displayTotal;
+            document.getElementById('usedStorageText').innerText = displayUsed;
+            document.getElementById('freeStorageText').innerText = displayFree;
+            document.getElementById('accountCountText').innerText = accounts.length + " Accounts";
+
+            // Update Progress Bar
+            let percentage = totalStorageGB > 0 ? ((totalUsedGB / totalStorageGB) * 100).toFixed(1) : 0;
+            document.getElementById('percentText').innerText = percentage + "% Used";
+            document.getElementById('progressFill').style.width = percentage + "%";
+
+            renderAccounts();
+            renderFiles();
         }
 
-        function deleteFile(element) {
-            if(confirm('क्या आप सच में इस फ़ाइल को डिलीट करना चाहते हैं?')) {
-                element.closest('.file-item').remove();
-                alert('फ़ाइल सफलतापूर्वक डिलीट कर दी गई है!');
+        // Render Gmail Accounts
+        function renderAccounts() {
+            let accountListUI = document.getElementById('accountList');
+            accountListUI.innerHTML = "";
+
+            if(accounts.length === 0) {
+                accountListUI.innerHTML = "<li style='color:#64748b; text-align:center; padding:1rem;'>कोई Gmail ID कनेक्टेड नहीं है।</li>";
+                return;
             }
-        }
 
-        function addAccount() {
-            let email = prompt("नई Gmail ID दर्ज करें:");
-            if (email) {
-                let list = document.getElementById('accountList');
-                let newItem = document.createElement('li');
-                newItem.className = 'account-item';
-                newItem.innerHTML = `
-                    <div class="account-email">
-                        <i class="fa-solid fa-envelope text-sky"></i> ${email}
-                    </div>
-                    <div class="account-storage">0 / 15 GB</div>
+            accounts.forEach((acc, index) => {
+                accountListUI.innerHTML += `
+                    <li class="list-item">
+                        <div class="item-details">
+                            <i class="fa-solid fa-envelope" style="color:#38bdf8;"></i>
+                            <div>
+                                <div class="item-title">${acc.email}</div>
+                                <div class="item-sub">${acc.used} GB / ${acc.total} GB Used</div>
+                            </div>
+                        </div>
+                        <div class="dropdown">
+                            <button class="three-dots-btn" onclick="toggleDropdown(event)"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                            <div class="dropdown-menu">
+                                <button class="danger" onclick="removeAccount(${index})"><i class="fa-solid fa-trash-can"></i> Remove ID</button>
+                            </div>
+                        </div>
+                    </li>
                 `;
-                list.appendChild(newItem);
-                alert('नई Gmail ID सफलतापूर्वक जोड़ दी गई है!');
+            });
+        }
+
+        // Render Files List
+        function renderFiles() {
+            let fileListUI = document.getElementById('fileList');
+            fileListUI.innerHTML = "";
+
+            if(files.length === 0) {
+                fileListUI.innerHTML = "<li style='color:#64748b; text-align:center; padding:1rem;'>कोई फ़ाइल मौजूद नहीं है।</li>";
+                return;
+            }
+
+            files.forEach((file, index) => {
+                fileListUI.innerHTML += `
+                    <li class="list-item">
+                        <div class="item-details">
+                            <i class="fa-solid fa-file-lines" style="color:#38bdf8; font-size:1.2rem;"></i>
+                            <div>
+                                <div class="item-title">${file.name}</div>
+                                <div class="item-sub">${file.size} • ${file.email}</div>
+                            </div>
+                        </div>
+                        <div class="dropdown">
+                            <button class="three-dots-btn" onclick="toggleDropdown(event)"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                            <div class="dropdown-menu">
+                                <button onclick="downloadFile('${file.name}')"><i class="fa-solid fa-download"></i> Download</button>
+                                <button class="danger" onclick="deleteFile(${index})"><i class="fa-solid fa-trash-can"></i> Delete</button>
+                            </div>
+                        </div>
+                    </li>
+                `;
+            });
+        }
+
+        // Toggle 3-Dots Menu
+        function toggleDropdown(event) {
+            event.stopPropagation();
+            closeAllDropdowns();
+            let menu = event.currentTarget.nextElementSibling;
+            menu.classList.toggle('show');
+        }
+
+        function closeAllDropdowns() {
+            document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
+        }
+
+        window.onclick = function() {
+            closeAllDropdowns();
+        };
+
+        // Add Real Gmail ID
+        function addNewGmail() {
+            let email = prompt("अपनी वास्तविक Gmail ID दर्ज करें:");
+            if (email) {
+                if(!email.includes('@gmail.com')) {
+                    alert('कृपया वैध @gmail.com एड्रेस ही दर्ज करें!');
+                    return;
+                }
+                accounts.push({ email: email.trim(), used: 0.0, total: 15 });
+                updateDashboard();
+                alert('Gmail ID सफलतापूर्वक जोड़ दी गई!');
             }
         }
 
-        function uploadFile() {
-            alert("फ़ाइल अपलोड करने का विकल्प चुना गया। बैकएंड सर्वर कनेक्ट करने पर फ़ाइल सीधे संबंधित Gmail Drive पर सेव हो जाएगी।");
+        // Remove Gmail ID
+        function removeAccount(index) {
+            if(confirm('क्या आप सच में इस Gmail ID को रिमूव करना चाहते हैं?')) {
+                accounts.splice(index, 1);
+                updateDashboard();
+            }
         }
+
+        // Download File
+        function downloadFile(filename) {
+            alert('डाउनलोडिंग शुरू: ' + filename);
+        }
+
+        // Delete File
+        function deleteFile(index) {
+            if(confirm('क्या आप इस फ़ाइल को डिलीट करना चाहते हैं?')) {
+                files.splice(index, 1);
+                updateDashboard();
+            }
+        }
+
+        // Upload File
+        function uploadNewFile() {
+            if(accounts.length === 0) {
+                alert('फ़ाइल अपलोड करने से पहले कम से कम एक Gmail ID ऐड करें!');
+                return;
+            }
+            let fileName = prompt("अपलोड के लिए फ़ाइल का नाम लिखें:");
+            if(fileName) {
+                files.push({ name: fileName, size: "15 MB", email: accounts[0].email });
+                updateDashboard();
+                alert('फ़ाइल सफलतापूर्वक अपलोड हो गई!');
+            }
+        }
+
+        // Initialize on page load
+        updateDashboard();
     </script>
 </body>
 </html>
