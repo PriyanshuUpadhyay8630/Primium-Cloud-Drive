@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Cloud - Secure Cloud Storage</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Navigation */
+        header {
+            background-color: #1e293b;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-google {
+            background-color: #ffffff;
+            color: #0f172a;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-google:hover {
+            background-color: #e2e8f0;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 1rem 2rem;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        .hero p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            flex-grow: 1;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #38bdf8;
+        }
+
+        .card.featured {
+            border: 2px solid #38bdf8;
+            background-color: #0f2942;
+        }
+
+        .badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #38bdf8;
+            color: #0f172a;
+            padding: 2px 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .storage-size {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #38bdf8;
+            margin: 1rem 0;
+        }
+
+        .card ul {
+            list-style: none;
+            margin: 1.5rem 0;
+            text-align: left;
+            color: #cbd5e1;
+        }
+
+        .card ul li {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card ul li i {
+            color: #22c55e;
+        }
+
+        .select-btn {
+            width: 100%;
+            background-color: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .select-btn:hover {
+            background-color: #0284c7;
+            color: #ffffff;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0b0f19;
+            text-align: center;
+            padding: 1.5rem;
+            color: #64748b;
+            font-size: 0.9rem;
+            border-top: 1px solid #1e293b;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header>
+        <div class="logo">
+            <i class="fa-solid fa-cloud"></i> Premium Cloud
+        </div>
+        <!-- Google OAuth backend login route -->
+        <a href="/login" class="btn-google">
+            <i class="fa-brands fa-google"></i> Sign in with Google
+        </a>
+    </header>
+
+    <!-- Main Content -->
+    <div class="hero">
+        <h1>सुरक्षित और असीमित क्लाउड स्टोरेज</h1>
+        <p>अपने सभी डेटा को सुरक्षित रखें और कहीं से भी एक्सेस करें। अपनी आवश्यकता अनुसार बेस्ट प्लान चुनें।</p>
+    </div>
+
+    <!-- Storage Plans -->
+    <section class="pricing-section">
+        <div class="pricing-grid">
+            
+            <!-- Basic Plan -->
+            <div class="card">
+                <h3>Starter Plan</h3>
+                <div class="storage-size">15 GB</div>
+                <ul>
+                    <li><i class="fa-solid fa-check"></i> High Speed Access</li>
+                    <li><i class="fa-solid fa-check"></i> 24/7 File Availability</li>
+                    <li><i class="fa-solid fa-check"></i> Basic Encryption</li>
+                </ul>
+                <button class="select-btn" onclick="loginRedirect()">Get Started</button>
+            </div>
+
+            <!-- 60 GB Plan -->
+            <div class="card featured">
+                <div class="badge">Popular Choice</div>
+                <h3>Standard Plan</h3>
+                <div class="storage-size">60 GB</div>
+                <ul>
+                    <li><i class="fa-solid fa-check"></i> Fast Upload & Download</li>
+                    <li><i class="fa-solid fa-check"></i> Multi-Device Sync</li>
+                    <li><i class="fa-solid fa-check"></i> Enhanced Security</li>
+                </ul>
+                <button class="select-btn" onclick="loginRedirect()">Get Started</button>
+            </div>
+
+            <!-- Pro Plan -->
+            <div class="card">
+                <h3>Pro Plan</h3>
+                <div class="storage-size">100 GB</div>
+                <ul>
+                    <li><i class="fa-solid fa-check"></i> Maximum Speed</li>
+                    <li><i class="fa-solid fa-check"></i> Priority Support</li>
+                    <li><i class="fa-solid fa-check"></i> Advanced Backup System</li>
+                </ul>
+                <button class="select-btn" onclick="loginRedirect()">Get Started</button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Premium Cloud Storage Services. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function loginRedirect() {
+            // Redirects user to Node.js backend OAuth route
+            window.location.href = '/login';
+        }
+    </script>
+</body>
+</html>
+
