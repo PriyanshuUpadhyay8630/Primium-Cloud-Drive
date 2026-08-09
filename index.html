@@ -4,6 +4,8 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Premium Cloud Console</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root{--bg:#090d16;--panel:#111827;--card:#1f293d;--border:#2b384e;--text:#f1f5f9;--sub:#94a3b8;--accent:#38bdf8;--accent-h:#0284c7;--sh:rgba(0,0,0,0.4)}
 [data-theme="light"]{--bg:#f8fafc;--panel:#fff;--card:#f1f5f9;--border:#e2e8f0;--text:#0f172a;--sub:#64748b;--accent:#0284c7;--accent-h:#0369a1;--sh:rgba(0,0,0,0.08)}
@@ -43,7 +45,7 @@ header{background:var(--panel);padding:0.7rem 1rem;display:flex;justify-content:
 .modal-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:1.2rem;width:100%;max-width:340px}
 .modal-card h3{font-size:1rem;margin-bottom:0.4rem;display:flex;align-items:center;gap:6px}
 .modal-card p{font-size:0.78rem;color:var(--sub);margin-bottom:0.8rem}
-.modal-card input{width:100%;padding:0.6rem;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text);outline:none;font-size:0.85rem;margin-bottom:1rem}
+.modal-card input,.modal-card select{width:100%;padding:0.6rem;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text);outline:none;font-size:0.85rem;margin-bottom:0.8rem}
 .modal-act{display:flex;justify-content:flex-end;gap:6px}
 .btn-c{background:transparent;border:1px solid var(--border);color:var(--sub);padding:0.45rem 0.8rem;border-radius:6px;font-size:0.78rem;cursor:pointer}
 footer{text-align:center;padding:1rem;color:var(--sub);font-size:0.72rem;border-top:1px solid var(--border);margin-top:auto}
@@ -86,8 +88,14 @@ footer{text-align:center;padding:1rem;color:var(--sub);font-size:0.72rem;border-
 <div class="modal-overlay" id="loginModal">
     <div class="modal-card">
         <h3><i class="fa-brands fa-google" style="color:#ea4335"></i> Connect Gmail ID</h3>
-        <p>अपनी असली Gmail ID दर्ज करें:</p>
+        <p>अपनी असली Gmail ID और स्टोरेज कैपेसिटी चुनें:</p>
         <input type="email" id="gmailInput" placeholder="example@gmail.com"/>
+        <select id="storageCapacity">
+            <option value="15">Free Plan (15 GB)</option>
+            <option value="100">Basic Plan (100 GB)</option>
+            <option value="2000">Standard Plan (2 TB)</option>
+            <option value="5120" selected>Custom / Work Plan (5 TB)</option>
+        </select>
         <div class="modal-act">
             <button class="btn-c" onclick="closeLoginModal()">Cancel</button>
             <button class="btn-p" onclick="submitGmailID()">Connect ID</button>
@@ -95,7 +103,13 @@ footer{text-align:center;padding:1rem;color:var(--sub);font-size:0.72rem;border-
     </div>
 </div>
 <footer><p>&copy; 2026 Premium Cloud Services.</p></footer>
+
 <script>
+// ==================== GOOGLE API CONFIGURATION ====================
+const CLIENT_ID = '76916863701-d18ob5sdp0p2d90eao1overkun1i1nob.apps.googleusercontent.com'; यहाँ अपनी Client ID पेस्ट करें
+const API_KEY = 'AIzaSyDb7OKrnCVie0jgDd-qNW9AoBMqiANcBtA';      यहाँ अपनी API Key पेस्ट करें
+// ==================================================================
+
 let accounts=[],files=[];
 function toggleTheme(){
     const b=document.body,t=document.getElementById('themeBtn');
@@ -105,12 +119,16 @@ function toggleTheme(){
 function openLoginModal(){document.getElementById('loginModal').style.display='flex';document.getElementById('gmailInput').focus();}
 function closeLoginModal(){document.getElementById('loginModal').style.display='none';document.getElementById('gmailInput').value='';}
 function submitGmailID(){
-    let e=document.getElementById('gmailInput').value.trim();
-    if(e&&e.includes('@gmail.com')){accounts.push({email:e,used:0.0,total:15});closeLoginModal();updateDashboard();}
-    else{alert('सही @gmail.com दर्ज करें!');}
+    let e=document.getElementById('gmailInput').value.trim().toLowerCase();
+    let cap=parseFloat(document.getElementById('storageCapacity').value);
+    if(!e || !e.includes('@gmail.com')){alert('कृपया सही @gmail.com दर्ज करें!');return;}
+    let exists = accounts.some(acc => acc.email === e);
+    if(exists){alert('यह Gmail ID पहले से ही कनेक्टेड है!');return;}
+    accounts.push({email:e,used:0.0,total:cap});
+    closeLoginModal();updateDashboard();
 }
 function updateDashboard(){
-    let tot=accounts.length*15,usd=accounts.reduce((a,c)=>a+c.used,0),fre=tot-usd;
+    let tot=accounts.reduce((a,c)=>a+c.total,0),usd=accounts.reduce((a,c)=>a+c.used,0),fre=tot-usd;
     document.getElementById('totalStorageText').innerText=tot>=1000?(tot/1024).toFixed(2)+" TB":tot.toFixed(1)+" GB";
     document.getElementById('usedStorageText').innerText=usd>=1000?(usd/1024).toFixed(2)+" TB":usd.toFixed(1)+" GB";
     document.getElementById('freeStorageText').innerText=fre>=1000?(fre/1024).toFixed(2)+" TB":fre.toFixed(1)+" GB";
@@ -122,9 +140,10 @@ function updateDashboard(){
 }
 function renderAccounts(){
     let a=document.getElementById('accountList');a.innerHTML="";
-    if(accounts.length===0){a.innerHTML="<li style='color:var(--sub);text-align:center;padding:0.6rem;font-size:0.78rem'>कोई ID नहीं है।</li>";return;}
+    if(accounts.length===0){a.innerHTML="<li style='color:var(--sub);text-align:center;padding:0.6rem;font-size:0.78rem'>कोई ID कनेक्टेड नहीं है।</li>";return;}
     accounts.forEach((acc,i)=>{
-        a.innerHTML+=`<li class="list-i"><div class="i-det"><i class="fa-solid fa-envelope" style="color:var(--accent)"></i><div><div class="i-title">${acc.email}</div><div class="i-sub">${acc.used} / ${acc.total} GB</div></div></div><div class="dropdown"><button class="dots-btn" onclick="toggleDropdown(event)"><i class="fa-solid fa-ellipsis-vertical"></i></button><div class="d-menu"><button class="danger" onclick="removeAccount(${i})"><i class="fa-solid fa-trash-can"></i> Remove</button></div></div></li>`;
+        let capTxt = acc.total >= 1024 ? (acc.total/1024).toFixed(0)+" TB" : acc.total+" GB";
+        a.innerHTML+=`<li class="list-i"><div class="i-det"><i class="fa-solid fa-envelope" style="color:var(--accent)"></i><div><div class="i-title">${acc.email}</div><div class="i-sub">${acc.used} GB / ${capTxt}</div></div></div><div class="dropdown"><button class="dots-btn" onclick="toggleDropdown(event)"><i class="fa-solid fa-ellipsis-vertical"></i></button><div class="d-menu"><button class="danger" onclick="removeAccount(${i})"><i class="fa-solid fa-trash-can"></i> Remove</button></div></div></li>`;
     });
 }
 function renderFiles(){
