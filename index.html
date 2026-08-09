@@ -1,65 +1,455 @@
-<!-- Storage Display Meter -->
-<div id="storage-info">
-  <p>Used Storage: <span id="used-storage">Loading...</span> GB / <span id="total-storage">--</span> GB</p>
-</div>
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Cloud - Storage Dashboard</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-<!-- Upload Form -->
-<input type="file" id="fileInput">
-<button onclick="uploadFile()">Upload File</button>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-<script>
-const WEB_APP_URL = "YAHAN_APNA_APPS_SCRIPT_WEB_APP_URL_DAALEIN";
+        /* Header Navigation */
+        header {
+            background-color: #1e293b;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+        }
 
-// Fetch Live Storage Stats
-async function fetchStorage() {
-  try {
-    let response = await fetch(WEB_APP_URL);
-    let data = await response.json();
-    document.getElementById("used-storage").innerText = data.used;
-    document.getElementById("total-storage").innerText = data.total;
-  } catch (error) {
-    console.error("Error fetching storage:", error);
-  }
-}
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-// Upload File to Drive
-async function uploadFile() {
-  let fileInput = document.getElementById("fileInput");
-  if (fileInput.files.length === 0) {
-    alert("Pehle file select karein!");
-    return;
-  }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #334155;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
 
-  let file = fileInput.files[0];
-  let reader = new FileReader();
+        /* Container Layout */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            width: 100%;
+            flex-grow: 1;
+        }
 
-  reader.onload = async function() {
-    let base64Data = reader.result.split(',')[1];
-    let payload = {
-      filename: file.name,
-      mimeType: file.type,
-      bytes: base64Data
-    };
+        /* Storage Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
 
-    alert("Uploading... Kripya intezaar karein.");
+        .stat-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
 
-    let response = await fetch(WEB_APP_URL, {
-      method: "POST",
-      body: JSON.stringify(payload)
-    });
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
 
-    let result = await response.json();
-    if (result.status === "success") {
-      alert("File successfully upload ho gayi!");
-      fetchStorage(); // Storage update karne ke liye
-    } else {
-      alert("Upload fail ho gaya: " + result.message);
-    }
-  };
+        .icon-total { background-color: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+        .icon-used { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .icon-free { background-color: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .icon-accounts { background-color: rgba(168, 85, 247, 0.2); color: #a855f7; }
 
-  reader.readAsDataURL(file);
-}
+        .stat-info h4 {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 0.3rem;
+        }
 
-// Page load hote hi storage stats fetch karein
-window.onload = fetchStorage;
-</script>
+        .stat-info p {
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        /* Storage Progress Bar */
+        .progress-container {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 12px;
+            background-color: #334155;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 25%; /* Dynamically calculated */
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            border-radius: 6px;
+            transition: width 0.4s ease;
+        }
+
+        /* Accounts & Management Section */
+        .main-section {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-section { grid-template-columns: 1fr; }
+        }
+
+        .panel {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        .btn-action {
+            background-color: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+        }
+
+        .btn-action:hover { background-color: #0284c7; color: #fff; }
+
+        /* Accounts List */
+        .account-list { list-style: none; }
+
+        .account-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #334155;
+        }
+
+        .account-item:last-child { border-bottom: none; }
+
+        .account-email {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .account-storage {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        /* File Manager List */
+        .file-list { list-style: none; }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            background-color: #0f172a;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            border: 1px solid #334155;
+        }
+
+        .file-details {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .file-icon { font-size: 1.3rem; color: #38bdf8; }
+        .file-name { font-size: 0.95rem; font-weight: 500; }
+        .file-size { font-size: 0.8rem; color: #94a3b8; }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: color 0.2s ease;
+        }
+
+        .btn-icon.download:hover { color: #22c55e; }
+        .btn-icon.delete:hover { color: #ef4444; }
+
+        /* Footer */
+        footer {
+            background-color: #0b0f19;
+            text-align: center;
+            padding: 1.2rem;
+            color: #64748b;
+            font-size: 0.85rem;
+            border-top: 1px solid #1e293b;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Header -->
+    <header>
+        <div class="logo">
+            <i class="fa-solid fa-cloud-bolt"></i> Premium Storage Manager
+        </div>
+        <div class="user-profile">
+            <i class="fa-solid fa-circle-user"></i>
+            <span>My Cloud Console</span>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Container -->
+    <div class="container">
+
+        <!-- Top Storage Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon icon-total"><i class="fa-solid fa-server"></i></div>
+                <div class="stat-info">
+                    <h4>कुल स्टोरेज (Total)</h4>
+                    <p id="totalStorage">105 GB</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-used"><i class="fa-solid fa-chart-pie"></i></div>
+                <div class="stat-info">
+                    <h4>भरी हुई (Used)</h4>
+                    <p id="usedStorage">26.2 GB</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-free"><i class="fa-solid fa-hard-drive"></i></div>
+                <div class="stat-info">
+                    <h4>ख़ाली स्थान (Free)</h4>
+                    <p id="freeStorage">78.8 GB</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-accounts"><i class="fa-brands fa-google"></i></div>
+                <div class="stat-info">
+                    <h4>कनेक्टेड Gmail IDs</h4>
+                    <p id="totalAccounts">7 Accounts</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visual Storage Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <span><strong>स्टोरेज उपयोग (Storage Usage)</strong></span>
+                <span id="usagePercent">25% Used</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-section">
+
+            <!-- Connected Gmail Accounts Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h3><i class="fa-brands fa-google"></i> Gmail Accounts</h3>
+                    <button class="btn-action" onclick="addAccount()"><i class="fa-solid fa-plus"></i> Add ID</button>
+                </div>
+                <ul class="account-list" id="accountList">
+                    <li class="account-item">
+                        <div class="account-email">
+                            <i class="fa-solid fa-envelope text-sky"></i> account1@gmail.com
+                        </div>
+                        <div class="account-storage">14 / 15 GB</div>
+                    </li>
+                    <li class="account-item">
+                        <div class="account-email">
+                            <i class="fa-solid fa-envelope text-sky"></i> account2@gmail.com
+                        </div>
+                        <div class="account-storage">8 / 15 GB</div>
+                    </li>
+                    <li class="account-item">
+                        <div class="account-email">
+                            <i class="fa-solid fa-envelope text-sky"></i> account3@gmail.com
+                        </div>
+                        <div class="account-storage">4.2 / 15 GB</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- File Management Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h3><i class="fa-solid fa-folder-open"></i> आपकी फ़ाइलें (Files)</h3>
+                    <button class="btn-action" onclick="uploadFile()"><i class="fa-solid fa-cloud-arrow-up"></i> Upload File</button>
+                </div>
+
+                <div class="file-list" id="fileList">
+                    
+                    <!-- File Item 1 -->
+                    <div class="file-item">
+                        <div class="file-details">
+                            <i class="fa-solid fa-file-pdf file-icon"></i>
+                            <div>
+                                <div class="file-name">Important_Document.pdf</div>
+                                <div class="file-size">12.5 MB • account1@gmail.com</div>
+                            </div>
+                        </div>
+                        <div class="file-actions">
+                            <button class="btn-icon download" title="Download" onclick="downloadFile('Important_Document.pdf')"><i class="fa-solid fa-download"></i></button>
+                            <button class="btn-icon delete" title="Delete" onclick="deleteFile(this)"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- File Item 2 -->
+                    <div class="file-item">
+                        <div class="file-details">
+                            <i class="fa-solid fa-file-image file-icon"></i>
+                            <div>
+                                <div class="file-name">Backup_Photo_2026.jpg</div>
+                                <div class="file-size">4.8 MB • account2@gmail.com</div>
+                            </div>
+                        </div>
+                        <div class="file-actions">
+                            <button class="btn-icon download" title="Download" onclick="downloadFile('Backup_Photo_2026.jpg')"><i class="fa-solid fa-download"></i></button>
+                            <button class="btn-icon delete" title="Delete" onclick="deleteFile(this)"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- File Item 3 -->
+                    <div class="file-item">
+                        <div class="file-details">
+                            <i class="fa-solid fa-file-zipper file-icon"></i>
+                            <div>
+                                <div class="file-name">Data_Archive.zip</div>
+                                <div class="file-size">1.2 GB • account3@gmail.com</div>
+                            </div>
+                        </div>
+                        <div class="file-actions">
+                            <button class="btn-icon download" title="Download" onclick="downloadFile('Data_Archive.zip')"><i class="fa-solid fa-download"></i></button>
+                            <button class="btn-icon delete" title="Delete" onclick="deleteFile(this)"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Premium Cloud Manager. All rights reserved.</p>
+    </footer>
+
+    <!-- Interactive JavaScript -->
+    <script>
+        // Interactive functions for UI demo
+        function downloadFile(filename) {
+            alert('फ़ाइल डाउनलोड हो रही है: ' + filename);
+        }
+
+        function deleteFile(element) {
+            if(confirm('क्या आप सच में इस फ़ाइल को डिलीट करना चाहते हैं?')) {
+                element.closest('.file-item').remove();
+                alert('फ़ाइल सफलतापूर्वक डिलीट कर दी गई है!');
+            }
+        }
+
+        function addAccount() {
+            let email = prompt("नई Gmail ID दर्ज करें:");
+            if (email) {
+                let list = document.getElementById('accountList');
+                let newItem = document.createElement('li');
+                newItem.className = 'account-item';
+                newItem.innerHTML = `
+                    <div class="account-email">
+                        <i class="fa-solid fa-envelope text-sky"></i> ${email}
+                    </div>
+                    <div class="account-storage">0 / 15 GB</div>
+                `;
+                list.appendChild(newItem);
+                alert('नई Gmail ID सफलतापूर्वक जोड़ दी गई है!');
+            }
+        }
+
+        function uploadFile() {
+            alert("फ़ाइल अपलोड करने का विकल्प चुना गया। बैकएंड सर्वर कनेक्ट करने पर फ़ाइल सीधे संबंधित Gmail Drive पर सेव हो जाएगी।");
+        }
+    </script>
+</body>
+</html>
